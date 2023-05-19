@@ -30,7 +30,7 @@ async function run() {
 
     app.get('/alltoys', async (req, res) => {
         try {
-          const limit = parseInt(req.query.limit) || 20; // Default limit of 20 or use the provided limit from query params
+          const limit = parseInt(req.query.limit) || 20; 
           const result = await carToysCollection.find().limit(limit).toArray();
           res.send(result);
         } catch (error) {
@@ -38,6 +38,13 @@ async function run() {
           res.status(500).send('Internal Server Error');
         }
       });
+
+      app.get('/myToys/:email',async(req,res) => {
+        const email = req.params.email;
+        const result = await carToysCollection.find({sellerEmail:email}).toArray()
+        res.send(result)
+        console.log(result);
+      })
 
 
     app.post('/addToys',async(req,res) => {
