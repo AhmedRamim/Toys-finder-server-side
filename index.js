@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000
@@ -43,7 +43,7 @@ async function run() {
         const email = req.params.email;
         const result = await carToysCollection.find({sellerEmail:email}).toArray()
         res.send(result)
-        console.log(result);
+        // console.log(result);
       })
 
 
@@ -54,7 +54,13 @@ async function run() {
     })
 
 
-
+    app.delete('/toy/:id',async(req,res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id : new ObjectId(id)}
+      const result =await carToysCollection.deleteOne(query)
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
