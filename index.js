@@ -28,6 +28,21 @@ async function run() {
 
     const carToysCollection = client.db('carToysDB').collection('carToys')
 
+    // indexing for search........
+    const indexKey = {name:1}
+    const indexOption = {name:'toyName'}
+    const result =await carToysCollection.createIndex(indexKey,indexOption)
+
+
+
+    app.get('/toySearchByName/:text',async(req,res) => {
+      const searchText = req.params.text;
+      const result = await carToysCollection.find({
+        name:{$regex:searchText, $options:"i"}
+      }).toArray()
+      res.send(result)
+    })
+
     app.get('/alltoys', async (req, res) => {
         try {
           const limit = parseInt(req.query.limit) || 20; 
@@ -56,7 +71,6 @@ async function run() {
 
     app.delete('/toy/:id',async(req,res) => {
       const id = req.params.id;
-      console.log(id);
       const query = { _id : new ObjectId(id)}
       const result =await carToysCollection.deleteOne(query)
       res.send(result)
