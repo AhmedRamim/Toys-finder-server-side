@@ -54,12 +54,31 @@ async function run() {
         }
       });
 
-      app.get('/myToys/:email',async(req,res) => {
-        const email = req.params.email;
-        const result = await carToysCollection.find({sellerEmail:email}).toArray()
-        res.send(result)
-        // console.log(result);
-      })
+      app.get('/myToys/:email', async (req, res) => {
+        try {
+          const email = req.params.email;
+          const sortBy = req.query.sortBy; 
+      
+          let sortOptions = {};
+          if (sortBy === 'lower') {
+            sortOptions = { price: 1 }; 
+          }
+          
+          else if (sortBy === 'higher') {
+            sortOptions = { price: -1 }; 
+          }
+          
+          const result = await carToysCollection
+            .find({ sellerEmail: email })
+            .sort(sortOptions)
+            .toArray();
+          res.send(result);
+        } catch (error) {
+          console.error('Error retrieving toys:', error);
+          res.status(500).send('Internal Server Error');
+        }
+      });
+      
 
 
     app.post('/addToys',async(req,res) => {
