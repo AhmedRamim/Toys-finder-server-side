@@ -28,6 +28,18 @@ async function run() {
 
     const carToysCollection = client.db('carToysDB').collection('carToys')
 
+    app.get('/alltoys', async (req, res) => {
+        try {
+          const limit = parseInt(req.query.limit) || 20; // Default limit of 20 or use the provided limit from query params
+          const result = await carToysCollection.find().limit(limit).toArray();
+          res.send(result);
+        } catch (error) {
+          console.error('Error retrieving toys:', error);
+          res.status(500).send('Internal Server Error');
+        }
+      });
+
+
     app.post('/addToys',async(req,res) => {
         const toys =  req.body;
         const result  = await carToysCollection.insertOne(toys)
