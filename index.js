@@ -85,6 +85,13 @@ async function run() {
           res.status(500).send('Internal Server Error');
         }
       });
+
+      app.get('/tab/:text',async(req,res)=> {
+        const text = req.params.text;
+        const query = {subCategory:(text)}
+        const result = await carToysCollection.find(query).toArray()
+        res.send(result)
+      })
       
 
 
